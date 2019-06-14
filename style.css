@@ -1,0 +1,26 @@
+/*
+Copyright 2019 Joyce Emanuele, Wellington Cesar
+This file is part of AP.
+*/
+
+html, body {
+	margin  : 0;
+	padding : 0;
+}
+
+canvas {
+	display : block;
+}
+
+.um {
+	display : inline-block;
+	width   : 300px;
+}
+
+.dois {
+	display : inline-block;
+}
+
+.tres {
+	display : inline-block;
+}

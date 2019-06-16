@@ -3,7 +3,7 @@
  This file is part of AP.
  */
 
-let temp = new Set();
+let temp = [];
 
 class Autonomo {
 	constructor(arq) {
@@ -12,21 +12,23 @@ class Autonomo {
 	}
 
 	reiniciar() {
-		this.estadoAtual = [this.estadoInicial];
+		this.DI = [{"estado": this.estadoInicial, "pilha": this.pilhaInicial}];
 	}
 
 	passo(letra) {
-		temp.clear();
-		let posicao = this.posAlfa(letra);
+		temp = [];
 
-		if(posicao >= 0) {
-			for(let p = 0; p < this.estadoAtual.length; p++) {
-				for(let pp = 0; pp < this.delta[this.estadoAtual[p]][posicao].length; pp++) {
-					temp.add(this.delta[this.estadoAtual[p]][posicao][pp]);
-				}
+		if(true) {
+			for(let p of this.DI) {
+				let estadoAtual = p.estado;
+				let topo = p.pilha.slice(0,1);
+				for(let pp of this.delta[estadoAtual][letra][topo]) {
+					let novoEstado = pp.estado;
+					let novaPilha = pp.pilha + p.pilha.slice(1);
+					temp.push({"estado": novoEstado, "pilha": novaPilha});
+				}                                                                             
 			}
-			this.estadoAtual = [];
-			for(let item of temp) this.estadoAtual.push(item);
+			this.DI = temp;
 		} else this.termino(false);
 	}
 
@@ -37,6 +39,11 @@ class Autonomo {
 		strokeWeight(1);
 		noStroke();
 		fill(0);
+		let dy = 35;
+		for(let e of this.DI) {
+			text(e.estado + ", " + e.pilha, 10, dy);
+			dy += 50;
+		}
 
 		if(estado === 'a') {
 			background(20, 200, 95);
@@ -48,9 +55,9 @@ class Autonomo {
 			background(170, 30, 80);
 			text("Símbolo não\nreconhecido!\n┐( ͡° ʖ̯ ͡°)┌", width / 2 - 170, height / 2 - 50);
 		}
-		this.ligacoes();
+		//this.ligacoes();
 
-		for(let i = 0; i < this.qtdEstados; i++) {
+		/*for(let i = 0; i < this.qtdEstados; i++) {
 			x = this.raio * cos(map(i, 0, this.qtdEstados, 0, TAU)) + width / 2;
 			y = this.raio * sin(map(i, 0, this.qtdEstados, 0, TAU)) + height / 2 - 50;
 
@@ -68,7 +75,7 @@ class Autonomo {
 				noFill();
 				circle(x, y, 30);
 			}
-		}
+		}*/
 	}
 
 	termino(fimcadeia) {

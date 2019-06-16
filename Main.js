@@ -50,8 +50,8 @@ function setup() {
 
 function draw() {
 	background(112, 193, 179);
-	//aut.mostrar();
-	//fita.mostrar();
+	aut.mostrar();
+	fita.mostrar();
 	if(estado === 'e' && caixa.checked()) {
 		aut.passo(fita.letra());
 		fita.passo();

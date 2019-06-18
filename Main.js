@@ -19,7 +19,7 @@
 
 let fita, aut, arquivo, som;
 let botao, caixa, entrada;
-let estado = 'p'; //(p)arado, (e)xecutando, (a)ceito, (r)ejeitado e (s)ímbolo desconhecido
+let estado = 'p'; //(p)arado, (e)xecutando, aceito por estado (f)inal, aceito por pilha (v)azia, (r)ejeitado e (s)ímbolo desconhecido
 
 function preload() {
 	//Arquivo de autômato disponível para edição em https://www.npoint.io/docs/23872ca4dabb11e40bc8
@@ -52,7 +52,7 @@ function draw() {
 	background(112, 193, 179);
 	aut.mostrar();
 	fita.mostrar();
-	if(estado === 'e' && caixa.checked()) {
+	if (estado === 'e' && caixa.checked()) {
 		aut.passo(fita.letra());
 		fita.passo();
 	}
@@ -65,7 +65,7 @@ function iniciar() {
 }
 
 function passoManual() {
-	if(estado === 'e' && !caixa.checked()) {
+	if (estado === 'e' && !caixa.checked()) {
 		aut.passo(fita.letra());
 		fita.passo();
 	}

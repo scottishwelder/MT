@@ -8,25 +8,25 @@ let temp = [];
 class Autonomo {
 	constructor(arq) {
 		Object.assign(this, arq);
-		this.DI = [{"estado": this.estadoInicial, "pilha": this.pilhaInicial}];
+		this.DI = [{ "estado": this.estadoInicial, "pilha": this.pilhaInicial }];
 	}
 
 	reiniciar() {
-		this.DI = [{"estado": this.estadoInicial, "pilha": this.pilhaInicial}];
+		this.DI = [{ "estado": this.estadoInicial, "pilha": this.pilhaInicial }];
 	}
 
 	passo(letra) {
 		temp = [];
 
-		if(true) {
-			for(let p of this.DI) {
+		if (this.alfabeto.includes(letra)) {
+			for (let p of this.DI) {
 				let estadoAtual = p.estado;
-				let topo = p.pilha.slice(0,1);
-				for(let pp of this.delta[estadoAtual][letra][topo]) {
+				let topo = p.pilha.slice(0, 1);
+				for (let pp of this.delta[estadoAtual][letra][topo]) {
 					let novoEstado = pp.estado;
 					let novaPilha = pp.pilha + p.pilha.slice(1);
-					temp.push({"estado": novoEstado, "pilha": novaPilha});
-				}                                                                             
+					temp.push({ "estado": novoEstado, "pilha": novaPilha });
+				}
 			}
 			this.DI = temp;
 		} else this.termino(false);
@@ -40,21 +40,27 @@ class Autonomo {
 		noStroke();
 		fill(0);
 		let dy = 35;
-		for(let e of this.DI) {
+		for (let e of this.DI) {
 			text(e.estado + ", " + e.pilha, 10, dy);
 			dy += 50;
 		}
-
-		if(estado === 'a') {
+		stroke(255);
+		
+		if (estado === 'f') {
 			background(20, 200, 95);
-			text("Aceito!\n( ͡ ͜ʖ ͡ )", width / 2 - 100, height / 2 - 50)
-		} else if(estado === 'r') {
+			text(" Aceito por\nestado final!\n   ( ͡ ͜ʖ ͡ )", width / 2 - 200, height / 2 - 50)
+		} else if (estado === 'v') {
+			background(20, 200, 95);
+			text(" Aceito por\npilha vazia!\n   ( ͡ ͜ʖ ͡ )", width / 2 - 180, height / 2 - 50)
+		} else if (estado === 'r') {
 			background(170, 30, 80);
 			text("Rejeitado!\nヽ( ͡ಠ ʖ̯ ͡ಠ)ﾉ", width / 2 - 150, height / 2 - 50);
-		} else if(estado === 's') {
+		} else if (estado === 's') {
 			background(170, 30, 80);
 			text("Símbolo não\nreconhecido!\n┐( ͡° ʖ̯ ͡°)┌", width / 2 - 170, height / 2 - 50);
 		}
+		// line(width/2, 0, width / 2, height);
+		// line(0, (height-100) / 2, width, (height-100) / 2);
 		//this.ligacoes();
 
 		/*for(let i = 0; i < this.qtdEstados; i++) {
@@ -80,17 +86,35 @@ class Autonomo {
 
 	termino(fimcadeia) {
 		window.navigator.vibrate(400);
-		if(estado !== 'e') return;
+		if (estado !== 'e') return;
 
 		som.start();
 		som.stop(0.5);
 
-		if(fimcadeia && this.estadoAtual.filter(x => this.estadosFinais.has(x)).length > 0) {
-			estado = 'a';
+		let estadoFinal = false;
+		let pilhaVazia = false;
+		if (this.estadosFinais.lenght) {
+			for (let e of this.DI) {
+				if (this.estadosFinais.includes(e.estado)) {
+					estadoFinal = true;
+					break;
+				}
+			}
+		} else {
+			for (let e of this.DI) {
+				if (e.pilha === "") {
+					pilhaVazia = true;
+					break;
+				}
+			}
+		}
+		if (fimcadeia && (estadoFinal || pilhaVazia)) {
 			som.freq(500);
+			if (estadoFinal) estado = 'f';
+			else estado = 'v';
 		} else {
 			som.freq(250);
-			if(fimcadeia) estado = 'r';
+			if (fimcadeia) estado = 'r';
 			else estado = 's';
 		}
 	}

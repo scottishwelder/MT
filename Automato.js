@@ -9,10 +9,12 @@ class Autonomo {
 	constructor(arq) {
 		Object.assign(this, arq);
 		this.DI = [{ "estado": this.estadoInicial, "pilha": this.pilhaInicial }];
+		this.DI = Efecho(this.delta, this.DI);
 	}
 
 	reiniciar() {
 		this.DI = [{ "estado": this.estadoInicial, "pilha": this.pilhaInicial }];
+		this.DI = Efecho(this.delta, this.DI);
 	}
 
 	passo(letra) {
@@ -29,6 +31,7 @@ class Autonomo {
 				}
 			}
 			this.DI = temp;
+			this.DI = Efecho(this.delta, this.DI);
 		} else this.termino(false);
 	}
 
@@ -118,4 +121,20 @@ class Autonomo {
 			else estado = 's';
 		}
 	}
+}
+
+function Efecho(delta, DIs) {
+	let pertence = false;
+	for (let i = 0; i < DIs.length; i++) {
+		let esAtual = DIs[i].estado;
+		let topo = DIs[i].pilha.slice(0, 1);
+		for (let j of delta[esAtual]["ε"][topo]) {
+			let novapilha = j.pilha + DIs[i].pilha.slice(1);
+			for (let k = 0; k < DIs.length; k++) {
+				if (DIs[k].pilha === novapilha && DIs[k].estado === j.estado) { pertence = true; }
+			}
+			if (!pertence) DIs.push({ "estado": j.estado, "pilha": novapilha });
+		}
+	}
+	return DIs;
 }

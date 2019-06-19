@@ -49,7 +49,6 @@ class Autonomo {
 		strokeWeight(1);
 		noStroke();
 		fill(0);
-		push();
 		textSize(35);
 		if (estado === 'f') {
 			background(20, 200, 95);
@@ -64,7 +63,6 @@ class Autonomo {
 			background(170, 30, 80);
 			text("Símbolo não\nreconhecido!\n┐( ͡° ʖ̯ ͡°)┌", width / 2 - 170, height / 2 - 50);
 		}
-		pop();
 		let dy = 35;
 		for (let e of this.DI) {
 			text("(" + e.estado + ", " + e.pilha + ")", 10, dy);
@@ -74,15 +72,15 @@ class Autonomo {
 		this.ligacoes();
 
 		for (let i of this.estados) {
-			let atual = false;
-			for(let j of this.DI){if(i === j.estado)atual= true;}
-			if(atual)fill(255, 22, 84);
-			else fill(243, 255, 189);
+			fill(243, 255, 189);
+			for (let j of this.DI)
+				if (i === j.estado) fill(255, 22, 84);
 			noStroke();
 
-			circle(this.coor[i].x,this.coor[i]. y, 30);
+			circle(this.coor[i].x, this.coor[i].y, 30);
 
 			fill(0);
+			textSize(50);
 			text(i, this.coor[i].x - 30, this.coor[i].y + 2);
 
 			if (this.estadosFinais.includes(i)) {
@@ -102,14 +100,15 @@ class Autonomo {
 
 		let estadoFinal = false;
 		let pilhaVazia = false;
-		if (this.estadosFinais.length) {
+
+		if (this.estadosFinais.length) {//Verificando se chegou em estado final
 			for (let e of this.DI) {
 				if (this.estadosFinais.includes(e.estado)) {
 					estadoFinal = true;
 					break;
 				}
 			}
-		} else {
+		} else {//Verificando se esvaziou a pilha
 			for (let e of this.DI) {
 				if (e.pilha === "") {
 					pilhaVazia = true;
@@ -128,66 +127,56 @@ class Autonomo {
 		}
 	}
 	ligacoes() {
-		stroke(0);
-
 		for (let i of this.estados) {
 			alf[i] = {};
 			for (let j of this.estados) {
 				alf[i][j] = [];
 			}
 		}
-
 		for (let i of this.estados) {
 			for (let j of this.alfabeto) {
 				for (let k of this.empilhaveis) {
 					for (let m = 0; m < this.delta[i][j][k].length; m++) {
-					        let pilhaApos = this.delta[i][j][k][m].pilha;
-						if(pilhaApos == "")pilhaApos = "ε" ;
+						let pilhaApos = this.delta[i][j][k][m].pilha;
+						if (pilhaApos == "") pilhaApos = "ε";
 						alf[i][this.delta[i][j][k][m].estado].push("\n" + j + "," + k + "|" + pilhaApos);
 					}
 				}
 			}
 		}
-		
+
+		let EI = this.estadoInicial;
+		stroke(0);
+		line(this.coor[EI].x, this.coor[EI].y, this.coor[EI].x, this.coor[EI].y - 80);
+		fill(color(100, 100, 100));
+		noStroke();
+		triangle(this.coor[EI].x, this.coor[EI].y - 28, this.coor[EI].x + 10, this.coor[EI].y - 50, this.coor[EI].x - 10, this.coor[EI].y - 50);
+
+		textSize(25);
+		fill(0);
 		for (let i in alf) {
 			for (let j in alf[i]) {
-				if (alf[i][j].length !== 0) {
-					line(this.coor[i].x, this.coor[i].y, this.coor[j].x, this.coor[j].y);
-					var pontoMedio = createVector((this.coor[i].x + this.coor[j].x) / 2, (this.coor[i].y + this.coor[j].y) / 2);
+				if (alf[i][j].length === 0) continue;
 
-					if (i === this.estadoInicial) {///estado inicial
-						push();
-						line(this.coor[i].x, this.coor[i].y, this.coor[i].x, this.coor[i].y + 60);
-						fill(color(100, 100, 100));
-						triangle(this.coor[i].x, this.coor[i].y + 30, this.coor[i].x + 10, this.coor[i].y + 50, this.coor[i].x - 10, this.coor[i].y + 50);
-						pop();
-					}
+				stroke(0);
+				line(this.coor[i].x, this.coor[i].y, this.coor[j].x, this.coor[j].y);
+				let pontoMedio = createVector((this.coor[i].x + this.coor[j].x) / 2, (this.coor[i].y + this.coor[j].y) / 2);
 
-					if (i == j) { //estados iguais
-						push();
-						triangle(this.coor[i].x, this.coor[i].y - 30, this.coor[i].x + 10, this.coor[i].y - 45, this.coor[i].x - 10, this.coor[i].y - 45);
-						pop();
-						push();
-						textSize(20);
-						if (mouseX >= this.coor[i].x - 10 && mouseX <= this.coor[i].x + 10 && mouseY >= this.coor[i].y - 45 && mouseY <= this.coor[i].y - 30)
-							text(alf[i][j], pontoMedio.x + 30, pontoMedio.y);
-						pop();
-					}
-
-					else {// estados diferentes
-						var pontotext = createVector((pontoMedio.x + this.coor[j].x) / 2, (pontoMedio.y + this.coor[j].y) / 2)
-						push();
-						var angulo = atan2(this.coor[i].y - this.coor[j].y, this.coor[i].x - this.coor[j].x)
-						translate(pontotext.x, pontotext.y);
-						rotate(angulo - HALF_PI);
-						triangle(-5, 10, 5, 10, 0, -4);
-						pop();
-						push();
-						textSize(20);
-						if (mouseX >= pontotext.x - 10 && mouseX <= pontotext.x + 30 && mouseY >= pontotext.y - 20 && mouseY <= pontotext.y + 50)
-							text(alf[i][j], pontotext.x, pontotext.y + 20);
-						pop();
-					}
+				noStroke();
+				if (i === j) {//estados iguais
+					triangle(this.coor[i].x, this.coor[i].y + 30, this.coor[i].x + 10, this.coor[i].y + 45, this.coor[i].x - 10, this.coor[i].y + 45);
+					if (mouseX >= this.coor[i].x - 10 && mouseX <= this.coor[i].x + 10 && mouseY <= this.coor[i].y + 45 && mouseY >= this.coor[i].y + 30)
+						text(alf[i][j], pontoMedio.x + 30, pontoMedio.y);
+				} else {// estados diferentes
+					let pontotext = createVector((pontoMedio.x + this.coor[j].x) / 2, (pontoMedio.y + this.coor[j].y) / 2);
+					push();
+					let angulo = atan2(this.coor[i].y - this.coor[j].y, this.coor[i].x - this.coor[j].x);
+					translate(pontotext.x, pontotext.y);
+					rotate(angulo - HALF_PI);
+					triangle(-5, 10, 5, 10, 0, -4);
+					pop();
+					if (mouseX >= pontotext.x - 10 && mouseX <= pontotext.x + 30 && mouseY >= pontotext.y - 20 && mouseY <= pontotext.y + 50)
+						text(alf[i][j], pontotext.x, pontotext.y + 20);
 				}
 			}
 		}

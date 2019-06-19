@@ -32,7 +32,6 @@ function setup() {
 
 	textFont("Roboto Mono");
 	textAlign(LEFT, CENTER);
-	textSize(50);
 
 	//frameRate(2);//Letras por segundos
 	fita = new Fita("Não iniciado");

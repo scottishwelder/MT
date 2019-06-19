@@ -49,8 +49,8 @@ class Autonomo {
 		strokeWeight(1);
 		noStroke();
 		fill(0);
-		stroke(255);
-
+		push();
+		textSize(35);
 		if (estado === 'f') {
 			background(20, 200, 95);
 			text(" Aceito por\nestado final!\n   ( ͡ ͜ʖ ͡ )", width / 2 - 200, height / 2 - 50)
@@ -64,17 +64,20 @@ class Autonomo {
 			background(170, 30, 80);
 			text("Símbolo não\nreconhecido!\n┐( ͡° ʖ̯ ͡°)┌", width / 2 - 170, height / 2 - 50);
 		}
+		pop();
 		let dy = 35;
 		for (let e of this.DI) {
 			text("(" + e.estado + ", " + e.pilha + ")", 10, dy);
 			dy += 50;
 		}
-		// line(width/2, 0, width / 2, height);
-		// line(0, (height-100) / 2, width, (height-100) / 2);
+
 		this.ligacoes();
 
 		for (let i of this.estados) {
-			fill(240, 80, 150);
+			let atual = false;
+			for(let j of this.DI){if(i === j.estado)atual= true;}
+			if(atual)fill(255, 22, 84);
+			else fill(243, 255, 189);
 			noStroke();
 
 			circle(this.coor[i].x,this.coor[i]. y, 30);
@@ -143,59 +146,49 @@ class Autonomo {
 				}
 			}
 		}
-
-		stroke(255);
-		strokeWeight(2);
-		push();
-		textSize(20);
+		
 		for (let i in alf) {
 			for (let j in alf[i]) {
 				if (alf[i][j].length !== 0) {
 					line(this.coor[i].x, this.coor[i].y, this.coor[j].x, this.coor[j].y);
-					text(alf[i][j], (this.coor[i].x + this.coor[j].x) / 2, (this.coor[i].y + this.coor[j].y) / 2);
-				}
-			}
-		}
-		pop();
-		/*
-		for (i = 0; i < this.qtdEstados; i++) {
-			for (j = 0; j < this.alfabeto.length; j++) {
-				for (m = 0; m < this.delta[i][j].length; m++) {
-					line(coor[i][k], coor[i][k + 1], coor[this.delta[i][j][m]][k], coor[this.delta[i][j][m]][k + 1]);
+					var pontoMedio = createVector((this.coor[i].x + this.coor[j].x) / 2, (this.coor[i].y + this.coor[j].y) / 2);
 
-					if (i === this.delta[i][j][m]) {
-						let PointM;
+					if (i === this.estadoInicial) {///estado inicial
 						push();
-						if (coor[i][k + 1] < height / 2) {
-							triangle(coor[i][k], coor[i][k + 1] - 25, coor[i][k] + 10, coor[i][k + 1] - 35, coor[i][k] - 10, coor[i][k + 1] - 35);
-							PointM = createVector(((coor[i][k] + 10) + (coor[i][k] - 10)) / 2 + 15, ((coor[i][k + 1] - 35) + (coor[i][k + 1] - 35)) / 2);
-						} else {
-							triangle(coor[i][k], coor[i][k + 1] + 25, coor[i][k] + 10, coor[i][k + 1] + 35, coor[i][k] - 10, coor[i][k + 1] + 35);
-							PointM = createVector(((coor[i][k] + 10) + (coor[i][k] - 10)) / 2, ((coor[i][k + 1] + 35) + (coor[i][k + 1] + 35)) / 2);
-						}
+						line(this.coor[i].x, this.coor[i].y, this.coor[i].x, this.coor[i].y + 60);
+						fill(color(100, 100, 100));
+						triangle(this.coor[i].x, this.coor[i].y + 30, this.coor[i].x + 10, this.coor[i].y + 50, this.coor[i].x - 10, this.coor[i].y + 50);
+						pop();
+					}
+
+					if (i == j) { //estados iguais
+						push();
+						triangle(this.coor[i].x, this.coor[i].y - 25, this.coor[i].x + 10, this.coor[i].y - 35, this.coor[i].x - 10, this.coor[i].y - 35);
+						pop();
 						push();
 						textSize(20);
-						text(alf[i][this.delta[i][j][m]], PointM.x, PointM.y + 10);
+						if (mouseX >= this.coor[i].x - 10 && mouseX <= this.coor[i].x + 10 && mouseY >= this.coor[i].y - 35 && mouseY <= this.coor[i].y - 25)
+							text(alf[i][j], pontoMedio.x + 30, pontoMedio.y);
 						pop();
-						pop();
-					} else {
-						push();
-						var angulo = atan2(coor[i][k + 1] - coor[this.delta[i][j][m]][k + 1], coor[i][k] - coor[this.delta[i][j][m]][k]);
-						let pM = createVector((coor[i][k] + coor[this.delta[i][j][m]][k]) / 2, (coor[i][k + 1] + coor[this.delta[i][j][m]][k + 1]) / 2);
+					}
 
-						translate((pM.x + coor[this.delta[i][j][m]][k]) / 2, (pM.y + coor[this.delta[i][j][m]][k + 1]) / 2);
+					else {// estados diferentes
+						var pontotext = createVector((pontoMedio.x + this.coor[j].x) / 2, (pontoMedio.y + this.coor[j].y) / 2)
+						push();
+						var angulo = atan2(this.coor[i].y - this.coor[j].y, this.coor[i].x - this.coor[j].x)
+						translate(pontotext.x, pontotext.y);
 						rotate(angulo - HALF_PI);
-						triangle(-10 * 0.5, 10, 10 * 0.5, 10, 0, -10 / 2);
+						triangle(-5, 10, 5, 10, 0, -4);
 						pop();
-
 						push();
 						textSize(20);
-						text(alf[i][this.delta[i][j][m]], (pM.x + coor[this.delta[i][j][m]][k]) / 2, (pM.y + coor[this.delta[i][j][m]][k + 1]) / 2 + 20);
+						if (mouseX >= pontotext.x - 10 && mouseX <= pontotext.x + 30 && mouseY >= pontotext.y - 20 && mouseY <= pontotext.y + 50)
+							text(alf[i][j], pontotext.x, pontotext.y + 20);
 						pop();
 					}
 				}
 			}
-		}*/
+		}
 	}
 	Efecho() {
 		let pertence = false;

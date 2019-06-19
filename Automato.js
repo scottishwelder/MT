@@ -4,17 +4,26 @@
  */
 
 let temp = [];
+let alf = {};
 
 class Autonomo {
 	constructor(arq) {
 		Object.assign(this, arq);
-		this.DI = [{ "estado": this.estadoInicial, "pilha": this.pilhaInicial }];
-		this.DI = Efecho(this.delta, this.DI);
+		this.DI = [];
+		this.raio = height / 2 - 100;
+		this.coor = {};
+		let i = 0;
+		for (let e of this.estados) {
+			let x = this.raio * cos(map(i, 0, this.estados.length, 0, TAU)) + width / 2;
+			let y = this.raio * sin(map(i, 0, this.estados.length, 0, TAU)) + height / 2 - 50;
+			this.coor[e] = createVector(x, y);
+			i++;
+		}
 	}
 
 	reiniciar() {
 		this.DI = [{ "estado": this.estadoInicial, "pilha": this.pilhaInicial }];
-		this.DI = Efecho(this.delta, this.DI);
+		this.Efecho();
 	}
 
 	passo(letra) {
@@ -24,6 +33,7 @@ class Autonomo {
 			for (let p of this.DI) {
 				let estadoAtual = p.estado;
 				let topo = p.pilha.slice(0, 1);
+				if (topo === "") continue;
 				for (let pp of this.delta[estadoAtual][letra][topo]) {
 					let novoEstado = pp.estado;
 					let novaPilha = pp.pilha + p.pilha.slice(1);
@@ -31,24 +41,16 @@ class Autonomo {
 				}
 			}
 			this.DI = temp;
-			this.DI = Efecho(this.delta, this.DI);
+			this.Efecho();
 		} else this.termino(false);
 	}
 
 	mostrar() {
-		let x, y;
-
-		temp = new Set(this.estadoAtual);
 		strokeWeight(1);
 		noStroke();
 		fill(0);
-		let dy = 35;
-		for (let e of this.DI) {
-			text(e.estado + ", " + e.pilha, 10, dy);
-			dy += 50;
-		}
 		stroke(255);
-		
+
 		if (estado === 'f') {
 			background(20, 200, 95);
 			text(" Aceito por\nestado final!\n   ( ͡ ͜ʖ ͡ )", width / 2 - 200, height / 2 - 50)
@@ -62,29 +64,30 @@ class Autonomo {
 			background(170, 30, 80);
 			text("Símbolo não\nreconhecido!\n┐( ͡° ʖ̯ ͡°)┌", width / 2 - 170, height / 2 - 50);
 		}
+		let dy = 35;
+		for (let e of this.DI) {
+			text("(" + e.estado + ", " + e.pilha + ")", 10, dy);
+			dy += 50;
+		}
 		// line(width/2, 0, width / 2, height);
 		// line(0, (height-100) / 2, width, (height-100) / 2);
-		//this.ligacoes();
+		this.ligacoes();
 
-		/*for(let i = 0; i < this.qtdEstados; i++) {
-			x = this.raio * cos(map(i, 0, this.qtdEstados, 0, TAU)) + width / 2;
-			y = this.raio * sin(map(i, 0, this.qtdEstados, 0, TAU)) + height / 2 - 50;
-
-			if(temp.has(i)) fill(255, 22, 84);
-			else fill(243, 255, 189);
+		for (let i of this.estados) {
+			fill(240, 80, 150);
 			noStroke();
 
-			circle(x, y, 25);
+			circle(this.coor[i].x,this.coor[i]. y, 30);
 
 			fill(0);
-			text(i, x - 15, y + 2);
+			text(i, this.coor[i].x - 30, this.coor[i].y + 2);
 
-			if(this.estadosFinais.has(i)) {
+			if (this.estadosFinais.includes(i)) {
 				stroke(0);
 				noFill();
-				circle(x, y, 30);
+				circle(this.coor[i].x, this.coor[i].y, 37);
 			}
-		}*/
+		}
 	}
 
 	termino(fimcadeia) {
@@ -96,7 +99,7 @@ class Autonomo {
 
 		let estadoFinal = false;
 		let pilhaVazia = false;
-		if (this.estadosFinais.lenght) {
+		if (this.estadosFinais.length) {
 			for (let e of this.DI) {
 				if (this.estadosFinais.includes(e.estado)) {
 					estadoFinal = true;
@@ -121,20 +124,92 @@ class Autonomo {
 			else estado = 's';
 		}
 	}
-}
+	ligacoes() {
+		stroke(0);
 
-function Efecho(delta, DIs) {
-	let pertence = false;
-	for (let i = 0; i < DIs.length; i++) {
-		let esAtual = DIs[i].estado;
-		let topo = DIs[i].pilha.slice(0, 1);
-		for (let j of delta[esAtual]["ε"][topo]) {
-			let novapilha = j.pilha + DIs[i].pilha.slice(1);
-			for (let k = 0; k < DIs.length; k++) {
-				if (DIs[k].pilha === novapilha && DIs[k].estado === j.estado) { pertence = true; }
+		for (let i of this.estados) {
+			alf[i] = {};
+			for (let j of this.estados) {
+				alf[i][j] = [];
 			}
-			if (!pertence) DIs.push({ "estado": j.estado, "pilha": novapilha });
+		}
+
+		for (let i of this.estados) {
+			for (let j of this.alfabeto) {
+				for (let k of this.empilhaveis) {
+					for (let m = 0; m < this.delta[i][j][k].length; m++) {
+						alf[i][this.delta[i][j][k][m].estado].push("\n" + j + "," + k + "|" + this.delta[i][j][k][m].pilha);
+					}
+				}
+			}
+		}
+
+		stroke(255);
+		strokeWeight(2);
+		push();
+		textSize(20);
+		for (let i in alf) {
+			for (let j in alf[i]) {
+				if (alf[i][j].length !== 0) {
+					line(this.coor[i].x, this.coor[i].y, this.coor[j].x, this.coor[j].y);
+					text(alf[i][j], (this.coor[i].x + this.coor[j].x) / 2, (this.coor[i].y + this.coor[j].y) / 2);
+				}
+			}
+		}
+		pop();
+		/*
+		for (i = 0; i < this.qtdEstados; i++) {
+			for (j = 0; j < this.alfabeto.length; j++) {
+				for (m = 0; m < this.delta[i][j].length; m++) {
+					line(coor[i][k], coor[i][k + 1], coor[this.delta[i][j][m]][k], coor[this.delta[i][j][m]][k + 1]);
+
+					if (i === this.delta[i][j][m]) {
+						let PointM;
+						push();
+						if (coor[i][k + 1] < height / 2) {
+							triangle(coor[i][k], coor[i][k + 1] - 25, coor[i][k] + 10, coor[i][k + 1] - 35, coor[i][k] - 10, coor[i][k + 1] - 35);
+							PointM = createVector(((coor[i][k] + 10) + (coor[i][k] - 10)) / 2 + 15, ((coor[i][k + 1] - 35) + (coor[i][k + 1] - 35)) / 2);
+						} else {
+							triangle(coor[i][k], coor[i][k + 1] + 25, coor[i][k] + 10, coor[i][k + 1] + 35, coor[i][k] - 10, coor[i][k + 1] + 35);
+							PointM = createVector(((coor[i][k] + 10) + (coor[i][k] - 10)) / 2, ((coor[i][k + 1] + 35) + (coor[i][k + 1] + 35)) / 2);
+						}
+						push();
+						textSize(20);
+						text(alf[i][this.delta[i][j][m]], PointM.x, PointM.y + 10);
+						pop();
+						pop();
+					} else {
+						push();
+						var angulo = atan2(coor[i][k + 1] - coor[this.delta[i][j][m]][k + 1], coor[i][k] - coor[this.delta[i][j][m]][k]);
+						let pM = createVector((coor[i][k] + coor[this.delta[i][j][m]][k]) / 2, (coor[i][k + 1] + coor[this.delta[i][j][m]][k + 1]) / 2);
+
+						translate((pM.x + coor[this.delta[i][j][m]][k]) / 2, (pM.y + coor[this.delta[i][j][m]][k + 1]) / 2);
+						rotate(angulo - HALF_PI);
+						triangle(-10 * 0.5, 10, 10 * 0.5, 10, 0, -10 / 2);
+						pop();
+
+						push();
+						textSize(20);
+						text(alf[i][this.delta[i][j][m]], (pM.x + coor[this.delta[i][j][m]][k]) / 2, (pM.y + coor[this.delta[i][j][m]][k + 1]) / 2 + 20);
+						pop();
+					}
+				}
+			}
+		}*/
+	}
+	Efecho() {
+		let pertence = false;
+		for (let i = 0; i < this.DI.length; i++) {
+			let esAtual = this.DI[i].estado;
+			let topo = this.DI[i].pilha.slice(0, 1);
+			if (topo === "") continue;
+			for (let j of this.delta[esAtual]["ε"][topo]) {
+				let novapilha = j.pilha + this.DI[i].pilha.slice(1);
+				for (let k = 0; k < this.DI.length; k++) {
+					if (this.DI[k].pilha === novapilha && this.DI[k].estado === j.estado) { pertence = true; }
+				}
+				if (!pertence) this.DI.push({ "estado": j.estado, "pilha": novapilha });
+			}
 		}
 	}
-	return DIs;
 }

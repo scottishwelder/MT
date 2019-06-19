@@ -141,7 +141,9 @@ class Autonomo {
 			for (let j of this.alfabeto) {
 				for (let k of this.empilhaveis) {
 					for (let m = 0; m < this.delta[i][j][k].length; m++) {
-						alf[i][this.delta[i][j][k][m].estado].push("\n" + j + "," + k + "|" + this.delta[i][j][k][m].pilha);
+					        let pilhaApos = this.delta[i][j][k][m].pilha;
+						if(pilhaApos == "")pilhaApos = "ε" ;
+						alf[i][this.delta[i][j][k][m].estado].push("\n" + j + "," + k + "|" + pilhaApos);
 					}
 				}
 			}
@@ -163,11 +165,11 @@ class Autonomo {
 
 					if (i == j) { //estados iguais
 						push();
-						triangle(this.coor[i].x, this.coor[i].y - 25, this.coor[i].x + 10, this.coor[i].y - 35, this.coor[i].x - 10, this.coor[i].y - 35);
+						triangle(this.coor[i].x, this.coor[i].y - 30, this.coor[i].x + 10, this.coor[i].y - 45, this.coor[i].x - 10, this.coor[i].y - 45);
 						pop();
 						push();
 						textSize(20);
-						if (mouseX >= this.coor[i].x - 10 && mouseX <= this.coor[i].x + 10 && mouseY >= this.coor[i].y - 35 && mouseY <= this.coor[i].y - 25)
+						if (mouseX >= this.coor[i].x - 10 && mouseX <= this.coor[i].x + 10 && mouseY >= this.coor[i].y - 45 && mouseY <= this.coor[i].y - 30)
 							text(alf[i][j], pontoMedio.x + 30, pontoMedio.y);
 						pop();
 					}

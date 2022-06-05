@@ -17,7 +17,7 @@
  along with AP. If not, see <https://www.gnu.org/licenses/>.
  */
 
-let aut, arquivo, som;
+let fita, aut, arquivo, som;
 let botao, caixa, entrada;
 // let estado = 'p'; //(p)arado, (e)xecutando, aceito por estado (f)inal, aceito por pilha (v)azia, (r)ejeitado e (s)ímbolo desconhecido
 let estado = 'p'; //(p)arado, (e)xecutando, (a)ceito, (r)ejeitado e (s)ímbolo desconhecido
@@ -35,7 +35,7 @@ function setup() {
 	textAlign(LEFT, CENTER);
 
 	//frameRate(2);//Letras por segundos
-	let fita = new Fita("Não iniciado");
+	fita = new Fita("Não iniciado");
 	aut = new Autonomo(arquivo, fita);
 	som = new p5.Oscillator();
 

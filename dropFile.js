@@ -37,5 +37,6 @@ function readJsonFile(file) {
     reader.onload = event => {
         const MT = JSON.parse(event.target.result);
         console.log(MT);
+	    aut = new Autonomo(MT, fita);
     };
 }

@@ -24,3 +24,10 @@ canvas {
 .tres {
 	display : inline-block;
 }
+
+#drop_file {
+  border: 5px solid black;
+  width:  200px;
+  height: 100px;
+}
+

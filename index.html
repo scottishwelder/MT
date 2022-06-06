@@ -7,17 +7,18 @@ This file is part of AP.
 <html lang="pt">
 
 <head>
-	<title>AP - por JE e WC</title>
+	<title>MT - por várias pessoas</title>
 	<meta charset="utf-8">
-
 	<link href="style.css" rel="stylesheet" type="text/css">
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono:light" rel="stylesheet">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.sound.min.js"></script>
+
+	<script src="dropFile.js"></script>
 </head>
 
-<body>
+<body ondrop="handleDropFile(event);" ondragover="handleDragOver(event);">
 	<script src="Main.js"></script>
 	<script src="Fita.js"></script>
 	<script src="Automato.js"></script>

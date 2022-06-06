@@ -13,7 +13,7 @@ function handleDropFile(event) {
         return;
     }
 
-    if (!event.dataTransfer.items[0].kind === 'file') {
+    if (event.dataTransfer.items[0].kind !== 'file') {
         alert('Por favor, insira um arquivo!');
         return;
     }

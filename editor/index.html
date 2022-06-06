@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Editor de Máquinas de Turing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .instrucoes {
+            position: fixed;
+            visibility: hidden;
+            bottom: 32px;
+            left: 32px;
+            list-style: none;
+        }
+        .instrucoes_visivel {
+            visibility: visible;
+        }
+        .instrucoes__instrucao {
+            font-family: 'Courier New', Courier, monospace;
+            text-shadow: 0 0 10px #030303;
+            color: #FFF;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="quadro" width="1000" height="600"></canvas>
+    <canvas id="acoes" width="1000" height="600"></canvas>
+
+    <ul class="instrucoes instrucoes_visivel" data-para="geral">
+        <li class="instrucoes__instrucao">N - Novo estado</li>
+        <li class="instrucoes__instrucao">C - Centralizar MT</li>
+        <li class="instrucoes__instrucao">Ctrl + S - Exportar MT</li>
+        <li class="instrucoes__instrucao">Clique em algum estado para mais ações</li>
+    </ul>
+    <ul class="instrucoes" data-para="selecionado">
+        <li class="instrucoes__instrucao">Esc - Cancelar</li>
+        <li class="instrucoes__instrucao">Del - Remover</li>
+        <li class="instrucoes__instrucao">F2&nbsp; - Renomear</li>
+        <li class="instrucoes__instrucao">T&nbsp;&nbsp; - Mover para o mouse</li>
+        <li class="instrucoes__instrucao">I&nbsp;&nbsp; - Inicial</li>
+        <li class="instrucoes__instrucao">F&nbsp;&nbsp; - Final</li>
+        <li class="instrucoes__instrucao">Clique (em outro/no mesmo) estado para adicionar/selecionar transição</li>
+    </ul>
+    <ul class="instrucoes" data-para="selecionada">
+        <li class="instrucoes__instrucao">Esc - Cancelar</li>
+        <li class="instrucoes__instrucao">Del - Remover</li>
+        <li class="instrucoes__instrucao">F2&nbsp; - Mudar caracteres aceitos</li>
+    </ul>
+    <ul class="instrucoes" data-para="novo">
+        <li class="instrucoes__instrucao">Esc - Cancelar</li>
+        <li class="instrucoes__instrucao">Clique em qualquer lugar para colocar o estado</li>
+    </ul>
+    <ul class="instrucoes" data-para="multi">
+        <li class="instrucoes__instrucao">Esc - Cancelar</li>
+        <li class="instrucoes__instrucao">Del - Remover todos</li>
+        <li class="instrucoes__instrucao">O&nbsp;&nbsp; - Organizar estados</li>
+    </ul>
+
+    <script>Math.TAU = 2 * 3.1415926535897932384626433832795;</script>
+    <script src="Vector2.js"></script>
+    <script src="Texto.js"></script>
+    <script src="Estado.js"></script>
+    <script src="Transicao.js"></script>
+    <script src="AutoTransicao.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>

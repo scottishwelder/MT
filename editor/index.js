@@ -10,6 +10,8 @@ const GRID = 100;
     const estados  = new Array(),
        transicoes  = new Array(),
             mouse  = new Vector2();
+
+    const EXPORT_LETRA = l => l === '\u03B2' ? ' ' : l;
     mouse.hasMoved = false;
 
     var novoEstado = null,
@@ -375,25 +377,25 @@ const GRID = 100;
                 automato.estados.sort();
 
                 // inicial
-                automato.inicial = estados.filter(e => e.isInicial);
-                if(automato.inicial.length != 1){
-                    alert(`Encontrados ${automato.inicial} iniciais, necessário: 1`);
+                automato.estadoInicial = estados.filter(e => e.isInicial);
+                if(automato.estadoInicial.length != 1){
+                    alert(`Encontrados ${automato.estadoInicial} iniciais, necessário: 1`);
                     break;
                 }
-                automato.inicial = automato.inicial[0].name;
+                automato.estadoInicial = automato.estadoInicial[0].name;
 
                 // finais
-                automato.finais = estados.filter(e => e.isFinal).map(a => a.name);
+                automato.estadosFinais = estados.filter(e => e.isFinal).map(a => a.name);
 
                 // transicoes
                 automato.delta = {};
                 for(const t of transicoes) {
                     for(const d of t.deltas) {
                         automato.delta[t.from.name] = automato.delta[t.from.name] || {};
-                        automato.delta[t.from.name][d.read] = {
-                            letra: d.write,
+                        automato.delta[t.from.name][EXPORT_LETRA(d.read)] = {
+                            letra: EXPORT_LETRA(d.write),
                             estado: t.to.name,
-                            direcao: d.move,
+                            'direção': d.move,
                         };
                     }
                 }

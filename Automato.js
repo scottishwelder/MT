@@ -6,11 +6,11 @@
 let alf = {};
 
 class Autonomo {
-	constructor(arq, fita) {
+	constructor(arq) {
 		Object.assign(this, arq);
 		this.estadoAtual = this.estadoInicial;
 		this.raio = height / 2 - 100;
-		this.fita = fita;
+		this.fita = new Fita("Não iniciado");
 		this.coor = {};
 		let i = 0;
 		for (let e of this.estados) {
@@ -58,13 +58,13 @@ class Autonomo {
 		textSize(35);
 		if (estado === 'a') {
 			background(20, 200, 95);
-			text(" Aceito!\n   ( ͡ ͜ʖ ͡ )", width / 2 - 200, height / 2 - 50)
+			text("   Aceito!\n   ( ͡ ͜ʖ ͡ )", width / 2 - 140, height / 2 - 50)
 		} else if (estado === 'r') {
 			background(170, 30, 80);
-			text("Rejeitado!\nヽ( ͡ಠ ʖ̯ ͡ಠ)ﾉ", width / 2 - 150, height / 2 - 50);
+			text(" Rejeitado!\nヽ( ͡ಠ ʖ̯ ͡ಠ)ﾉ", width / 2 - 140, height / 2 - 50);
 		} else if (estado === 's') {
 			background(170, 30, 80);
-			text("Símbolo não\nreconhecido!\n┐( ͡° ʖ̯ ͡°)┌", width / 2 - 170, height / 2 - 50);
+			text("Símbolo não\nreconhecido!\n ┐( ͡° ʖ̯ ͡°)┌", width / 2 - 140, height / 2 - 50);
 		}
 
 		this.ligacoes();

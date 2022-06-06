@@ -18,14 +18,10 @@ This file is part of AP.
 	<script src="dropFile.js"></script>
 </head>
 
-<body>
+<body ondrop="handleDropFile(event);" ondragover="handleDragOver(event);">
 	<script src="Main.js"></script>
 	<script src="Fita.js"></script>
 	<script src="Automato.js"></script>
-
-	<div id="drop_file" ondrop="handleDropFile(event);" ondragover="handleDragOver(event);">
-		<p>Insira aqui o arquivo que descreve sua Máquina de Turing...</p>
-	</div>
 </body>
 
 </html>

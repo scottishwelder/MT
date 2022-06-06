@@ -3,8 +3,6 @@
  This file is part of AP.
  */
 
-let alf = {};
-
 class Autonomo {
 	constructor(arq) {
 		Object.assign(this, arq);
@@ -100,6 +98,7 @@ class Autonomo {
 	}
 	ligacoes() {
 		//Definição dos rótulos de transição
+		let alf = {};
 		for (let i of this.estados) {
 			alf[i] = {};
 			for (let j of this.estados) {

@@ -35,8 +35,7 @@ function setup() {
 	textAlign(LEFT, CENTER);
 
 	//frameRate(2);//Letras por segundos
-	let fita = new Fita("Não iniciado");
-	aut = new Autonomo(arquivo, fita);
+	aut = new Autonomo(arquivo);
 	som = new p5.Oscillator();
 
 	entrada = createInput()
